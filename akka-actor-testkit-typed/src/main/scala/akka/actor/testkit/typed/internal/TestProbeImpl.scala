@@ -204,7 +204,7 @@ private[akka] final class TestProbeImpl[M](name: String, system: ActorSystem[_])
               case FishingOutcome.Fail(error) ⇒ throw new AssertionError(s"$error, hint: $hint")
               case continue ⇒
                 val newTimeout =
-                  if (timeout.isFinite()) timeout - (System.nanoTime() - start).nanos
+                  if (timeout.isFinite) timeout - (System.nanoTime() - start).nanos
                   else timeout
                 if (newTimeout.toMillis <= 0) {
                   throw new AssertionError(s"timeout ($max) during fishForMessage, seen messages ${seen.reverse}, hint: $hint")
