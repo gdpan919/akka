@@ -16,7 +16,7 @@ import akka.pattern.{ ask, pipe }
 import akka.util.{ Helpers, Timeout }
 
 import scala.collection.immutable.Seq
-import scala.collection.{ breakOut, immutable }
+import scala.collection.immutable
 import scala.concurrent.Future
 import scala.util.Try
 import scala.util.control.NonFatal
@@ -80,8 +80,9 @@ private[io] final class AsyncDnsResolver(
 
   private def sendQuestion(resolver: ActorRef, message: DnsQuestion): Future[Answer] = {
     val result = (resolver ? message).mapTo[Answer]
-    result.onFailure {
-      case NonFatal(_) ⇒ resolver ! DropRequest(message.id)
+    result.onComplete {
+      case scala.util.Failure(NonFatal(_)) ⇒ resolver ! DropRequest(message.id)
+      case _                               ⇒ ()
     }
     result
   }

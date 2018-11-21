@@ -10,7 +10,8 @@ import akka.actor._
 import akka.routing.ConsistentHashingRouter.ConsistentHashable
 import com.typesafe.config.Config
 
-import scala.collection.{ breakOut, immutable }
+import scala.collection.immutable
+import scala.collection.compat._
 
 abstract class Dns {
 
@@ -51,12 +52,12 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
 
   object Resolved {
     def apply(name: String, addresses: Iterable[InetAddress]): Resolved = {
-      val ipv4: immutable.Seq[Inet4Address] = addresses.collect({
+      val ipv4: immutable.Seq[Inet4Address] = addresses.iterator.collect({
         case a: Inet4Address ⇒ a
-      })(breakOut)
-      val ipv6: immutable.Seq[Inet6Address] = addresses.collect({
+      }).to(scala.collection.immutable.IndexedSeq)
+      val ipv6: immutable.Seq[Inet6Address] = addresses.iterator.collect({
         case a: Inet6Address ⇒ a
-      })(breakOut)
+      }).to(scala.collection.immutable.IndexedSeq)
       Resolved(name, ipv4, ipv6)
     }
   }
