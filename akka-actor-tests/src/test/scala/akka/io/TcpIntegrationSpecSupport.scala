@@ -11,6 +11,7 @@ import akka.actor.ActorRef
 import akka.io.Inet.SocketOption
 import akka.testkit.SocketUtil._
 import Tcp._
+import scala.collection.immutable
 
 trait TcpIntegrationSpecSupport { _: AkkaSpec ⇒
 
@@ -47,10 +48,10 @@ trait TcpIntegrationSpecSupport { _: AkkaSpec ⇒
       }
 
     /** allow overriding socket options for server side channel */
-    def bindOptions: immutable.Traversable[SocketOption] = Nil
+    def bindOptions: immutable.Iterable[SocketOption] = Nil
 
     /** allow overriding socket options for client side channel */
-    def connectOptions: immutable.Traversable[SocketOption] = Nil
+    def connectOptions: immutable.Iterable[SocketOption] = Nil
   }
 
 }
