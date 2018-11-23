@@ -45,6 +45,7 @@ import org.agrona.IoUtil
 import org.agrona.collections.IntObjConsumer
 import org.agrona.concurrent.BackoffIdleStrategy
 import org.agrona.concurrent.status.CountersReader.MetaData
+import scala.collection.compat._
 
 /**
  * INTERNAL API
@@ -347,9 +348,9 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
 
         val lane = inboundSink(envelopeBufferPool)
         val completedValues: Vector[Future[Done]] =
-          (0 until inboundLanes).map { _ ⇒
+          (0 until inboundLanes).iterator.map { _ ⇒
             laneHub.toMat(lane)(Keep.right).run()(materializer)
-          }(collection.breakOut)
+          }.to(scala.collection.immutable.Vector)
 
         import system.dispatcher
 

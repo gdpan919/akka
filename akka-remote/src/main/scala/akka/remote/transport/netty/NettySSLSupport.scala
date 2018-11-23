@@ -10,6 +10,7 @@ import akka.japi.Util._
 import akka.remote.security.provider.DeprecatedAkkaProvider
 import com.typesafe.config.Config
 import org.jboss.netty.handler.ssl.SslHandler
+import scala.collection.compat._
 
 /**
  * INTERNAL API
@@ -27,7 +28,7 @@ private[akka] class SSLSettings(config: Config) {
 
   val SSLTrustStorePassword = getString("trust-store-password")
 
-  val SSLEnabledAlgorithms = immutableSeq(getStringList("enabled-algorithms")).to[Set]
+  val SSLEnabledAlgorithms = immutableSeq(getStringList("enabled-algorithms")).to(Set)
 
   val SSLProtocol = getString("protocol")
 
